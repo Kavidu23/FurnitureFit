@@ -3,114 +3,179 @@ package com.mycompany.furnituredesignapp.ui;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.*;
+import java.awt.font.TextAttribute;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Help panel with user guide and application instructions.
+ * Help panel with practical guidance matching the account panel design style.
  */
 public class HelpPanel extends JPanel {
+
+    private static final Color GREEN = new Color(45, 136, 45);
+    private static final Color PANEL_BG = new Color(240, 242, 245);
+    private static final Color CARD_BG = new Color(255, 255, 255);
+    private static final Color MUTED_TEXT = new Color(95, 95, 95);
+
+    private final Font titleFont = new Font("Segoe UI", Font.BOLD, 24);
+    private final Font sectionTitleFont = new Font("Segoe UI", Font.BOLD, 18);
+    private final Font bodyFont = new Font("Segoe UI", Font.PLAIN, 15);
+    private final Font buttonFont = createButtonFont(15f);
 
     private Runnable onBack;
 
     public HelpPanel() {
         setLayout(new MigLayout("fill, insets 0", "[center]", "[center]"));
-        setBackground(new Color(245, 245, 245));
+        setBackground(PANEL_BG);
 
-        JPanel card = new JPanel(new MigLayout("wrap 1, insets 30, gapy 5", "[600!, fill]"));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210), 1));
+        JPanel card = new JPanel(new MigLayout("fill, wrap 1, insets 16, gapy 10", "[469!, fill]", "[][grow, fill][]"));
+        card.setBackground(CARD_BG);
+        card.setBorder(new RoundedBorder(new Color(215, 215, 215), 1, 16));
+        card.setPreferredSize(new Dimension(469, 540));
 
-        // Title
-        JLabel title = new JLabel("Help & User Guide");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setForeground(new Color(56, 124, 43));
-        card.add(title, "center, gapbottom 15");
+        JLabel title = new JLabel("Help & Guide", SwingConstants.CENTER);
+        title.setFont(titleFont);
+        title.setForeground(new Color(30, 30, 30));
+        card.add(title, "center");
 
-        // Help content
-        String helpHtml = """
-            <html>
-            <body style="color: #404040; font-family: 'Segoe UI'; font-size: 12px; line-height: 1.6;">
-            
-            <h3 style="color: #387C2B;">Getting Started</h3>
-            <p>FurnitureFit Design Studio allows designers to create room layouts with furniture
-            and visualize them in both 2D and 3D views.</p>
-            
-            <h3 style="color: #387C2B;">Creating a Design</h3>
-            <ol>
-                <li>Click <b>"+ New Design"</b> from the Dashboard</li>
-                <li>Configure the room dimensions, shape, and colours using the <b>Room</b> button</li>
-                <li>Add furniture using the <b>Furniture</b> button in the toolbar</li>
-                <li>Arrange furniture by dragging them in the 2D canvas</li>
-                <li>Save your design using the <b>Save</b> button</li>
-            </ol>
-            
-            <h3 style="color: #387C2B;">2D Canvas Controls</h3>
-            <ul>
-                <li><b>Left Click</b> — Select furniture</li>
-                <li><b>Left Drag</b> — Move selected furniture</li>
-                <li><b>Right Click</b> — Context menu (color, rotate, delete)</li>
-                <li><b>Alt + Drag</b> — Pan the view</li>
-                <li><b>Scroll Wheel</b> — Zoom in/out</li>
-                <li><b>R key</b> — Rotate selected furniture by 15°</li>
-                <li><b>Delete key</b> — Delete selected furniture</li>
-                <li><b>Ctrl+0</b> — Reset zoom and pan</li>
-            </ul>
-            
-            <h3 style="color: #387C2B;">3D View Controls</h3>
-            <ul>
-                <li><b>Left Drag</b> — Orbit the perspective view (azimuth &amp; elevation)</li>
-                <li><b>Middle Drag</b> — Pan the view</li>
-                <li><b>Scroll Wheel</b> — Zoom in/out</li>
-            </ul>
-            
-            <h3 style="color: #387C2B;">Toolbar Features</h3>
-            <ul>
-                <li><b>Room</b> — Set room size, shape (Rectangular, Square, L-shaped), wall & floor colours</li>
-                <li><b>Furniture</b> — Browse and add furniture (chairs, tables, sofas, shelves, etc.)</li>
-                <li><b>Shade</b> — Apply shading to selected or all furniture</li>
-                <li><b>Zoom +/−</b> — Scale the view</li>
-                <li><b>Fit</b> — Auto-scale all furniture to fit within the room</li>
-                <li><b>Color</b> — Change color of selected or all furniture</li>
-                <li><b>2D/3D</b> — Toggle between top-down 2D and perspective 3D views</li>
-                <li><b>Save</b> — Save the current design to the database</li>
-            </ul>
-            
-            <h3 style="color: #387C2B;">Properties Panel</h3>
-            <p>When furniture is selected, the right-side Properties panel shows its position,
-            size, rotation, shade, and color. All values can be edited directly.</p>
-            
-            <h3 style="color: #387C2B;">Managing Designs</h3>
-            <ul>
-                <li>Open saved designs from the Dashboard by clicking <b>Open</b> or double-clicking</li>
-                <li>Delete designs using the <b>Delete</b> button on each design card</li>
-                <li>Designs are stored locally in a SQLite database</li>
-            </ul>
-            
-            </body>
-            </html>
-        """;
+        JPanel content = new JPanel(new MigLayout("fillx, wrap 1, insets 0, gapy 8", "[grow, fill]"));
+        content.setOpaque(false);
 
-        JLabel helpContent = new JLabel(helpHtml);
-        JScrollPane scrollPane = new JScrollPane(helpContent);
+        content.add(createSectionCard(
+                "Quick Start",
+                "1. Create a new design from Dashboard.\n"
+                        + "2. Set room dimensions first.\n"
+                        + "3. Add furniture and arrange in 2D.\n"
+                        + "4. Switch to 3D to review perspective.\n"
+                        + "5. Save regularly."
+        ), "growx");
+
+        content.add(createSectionCard(
+                "Editor Shortcuts",
+                "Left Drag: Move selected furniture\n"
+                        + "Right Click: Item actions\n"
+                        + "Mouse Wheel: Zoom\n"
+                        + "Alt + Drag: Pan\n"
+                        + "R: Rotate selected item\n"
+                        + "Delete: Remove selected item"
+        ), "growx");
+
+        content.add(createSectionCard(
+                "Troubleshooting",
+                "If a design does not appear, refresh from Dashboard.\n"
+                        + "If movement feels slow, reduce object count in one room.\n"
+                        + "If login fails, verify email and password exactly.\n"
+                        + "For password reset, use account settings or support flow."
+        ), "growx");
+
+        content.add(createSectionCard(
+                "Best Practice",
+                "Keep at least 0.8m walking clearance.\n"
+                        + "Group furniture by activity zone (sleep/work/relax).\n"
+                        + "Use 3D preview before final save."
+        ), "growx");
+
+        JScrollPane scrollPane = new JScrollPane(content);
         scrollPane.setBorder(null);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        card.add(scrollPane, "grow, push, h 400!");
+        card.add(scrollPane, "grow, push");
 
-        // Back button
-        JButton backBtn = new JButton("← Back to Dashboard");
-        backBtn.setBackground(new Color(56, 124, 43));
-        backBtn.setForeground(Color.WHITE);
-        backBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        backBtn.setFocusPainted(false);
-        backBtn.setBorderPainted(false);
-        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        backBtn.addActionListener(e -> { if (onBack != null) onBack.run(); });
-        card.add(backBtn, "growx, h 36!, gaptop 15");
+        JButton backBtn = createPrimaryButton("Back to Dashboard");
+        backBtn.addActionListener(e -> {
+            if (onBack != null) {
+                onBack.run();
+            }
+        });
+        card.add(backBtn, "growx, h 38!");
 
         add(card, "center");
     }
 
-    public void setOnBack(Runnable callback) { this.onBack = callback; }
+    private JPanel createSectionCard(String heading, String content) {
+        JPanel panel = new JPanel(new MigLayout("fillx, wrap 1, insets 12, gapy 4", "[grow, fill]"));
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new RoundedBorder(new Color(220, 220, 220), 1, 12));
+
+        JLabel headingLabel = new JLabel(heading);
+        headingLabel.setFont(sectionTitleFont);
+        headingLabel.setForeground(new Color(35, 35, 35));
+        panel.add(headingLabel);
+
+        JTextArea body = new JTextArea(content);
+        body.setEditable(false);
+        body.setFocusable(false);
+        body.setLineWrap(true);
+        body.setWrapStyleWord(true);
+        body.setOpaque(false);
+        body.setFont(bodyFont);
+        body.setForeground(MUTED_TEXT);
+        body.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+        panel.add(body, "growx");
+
+        return panel;
+    }
+
+    private JButton createPrimaryButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(buttonFont);
+        button.setForeground(Color.WHITE);
+        button.setBackground(GREEN);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setOpaque(true);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
+    private Font createButtonFont(float size) {
+        Map<TextAttribute, Object> attrs = new HashMap<>();
+        attrs.put(TextAttribute.FAMILY, "Segoe UI");
+        attrs.put(TextAttribute.SIZE, size);
+        attrs.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+        return new Font(attrs);
+    }
+
+    public void setOnBack(Runnable callback) {
+        this.onBack = callback;
+    }
+
+    private static class RoundedBorder extends AbstractBorder {
+        private final Color color;
+        private final int thickness;
+        private final int radius;
+
+        RoundedBorder(Color color, int thickness, int radius) {
+            this.color = color;
+            this.thickness = thickness;
+            this.radius = radius;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(color);
+            g2.setStroke(new BasicStroke(thickness));
+            g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+            g2.dispose();
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(thickness, thickness, thickness, thickness);
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c, Insets insets) {
+            insets.left = thickness;
+            insets.right = thickness;
+            insets.top = thickness;
+            insets.bottom = thickness;
+            return insets;
+        }
+    }
 }
