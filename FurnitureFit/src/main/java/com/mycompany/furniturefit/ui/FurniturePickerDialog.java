@@ -12,24 +12,47 @@ import java.util.function.Consumer;
 /**
  * Furniture picker shown as a floating panel on the left side of the editor.
  * Matches the "Furnish" floating panel in the screenshot:
- *   – "Furnish" title + X close
- *   – Favourites / Categories pill tabs
+ *   – "Furnish" title + X close (custom-painted for reliable display)
+ *   – Favourites / Categories pill tabs (functional switching)
  *   – 2-column grid of rendered furniture thumbnails
  */
 public class FurniturePickerDialog extends JDialog {
 
-    private static final Color GREEN       = new Color(56, 124, 43);
+    private static final Color GREEN       = new Color(45, 136, 45);
     private static final Color CARD_BG     = new Color(255, 255, 255);
     private static final Color CARD_BORDER = new Color(210, 210, 210);
 
     private Furniture.Type selectedType;
     private boolean confirmed = false;
 
+    // Favourites: most popular items
+    private static final Furniture.Type[] FAVOURITES = {
+        Furniture.Type.CHAIR, Furniture.Type.DINING_TABLE,
+        Furniture.Type.SIDE_TABLE, Furniture.Type.SOFA,
+        Furniture.Type.SHELF, Furniture.Type.COFFEE_TABLE
+    };
+
+    // Categories
+    private static final String[] CATEGORY_NAMES = {
+        "Seating", "Tables", "Storage", "Bedroom"
+    };
+    private static final Furniture.Type[][] CATEGORY_ITEMS = {
+        { Furniture.Type.CHAIR, Furniture.Type.SOFA },           // Seating
+        { Furniture.Type.DINING_TABLE, Furniture.Type.SIDE_TABLE,
+          Furniture.Type.COFFEE_TABLE, Furniture.Type.DESK },    // Tables
+        { Furniture.Type.SHELF, Furniture.Type.WARDROBE },       // Storage
+        { Furniture.Type.BED, Furniture.Type.LAMP },             // Bedroom
+    };
+
+    private JPanel gridContainer;
+    private JToggleButton favBtn, catBtn;
+    private boolean showingFavourites = true;
+
     public FurniturePickerDialog(Frame owner) {
         super(owner, true);   // modal so isConfirmed() is readable after setVisible
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0));
-        setSize(310, 480);
+        setSize(320, 480);
         // Position near the left sidebar (approx.)
         if (owner != null) {
             Point ownerLoc = owner.getLocationOnScreen();
@@ -61,46 +84,70 @@ public class FurniturePickerDialog extends JDialog {
         };
         card.setOpaque(false);
 
-        // Header: "Furnish" title + X
+        // Header: "Furnish" title + X (custom-painted close button)
         JPanel header = new JPanel(new MigLayout("insets 0", "[grow][]"));
         header.setOpaque(false);
         JLabel title = new JLabel("Furnish");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        title.setFont(new Font("Segoe UI", Font.BOLD, 17));
         title.setForeground(new Color(40, 40, 40));
         header.add(title);
-        JButton closeBtn = new JButton("\u2715");
-        closeBtn.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        closeBtn.setForeground(new Color(100, 100, 100));
-        closeBtn.setFocusPainted(false); closeBtn.setBorderPainted(false); closeBtn.setContentAreaFilled(false);
+
+        // Custom painted X close button for reliable display
+        JButton closeBtn = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                boolean hov = getModel().isRollover();
+                g2.setColor(hov ? new Color(200, 60, 60) : new Color(100, 100, 100));
+                g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                int cx = getWidth() / 2, cy = getHeight() / 2;
+                int sz = 5;
+                g2.drawLine(cx - sz, cy - sz, cx + sz, cy + sz);
+                g2.drawLine(cx + sz, cy - sz, cx - sz, cy + sz);
+                g2.dispose();
+            }
+        };
+        closeBtn.setRolloverEnabled(true);
+        closeBtn.setPreferredSize(new Dimension(28, 28));
+        closeBtn.setFocusPainted(false);
+        closeBtn.setBorderPainted(false);
+        closeBtn.setContentAreaFilled(false);
+        closeBtn.setOpaque(false);
         closeBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         closeBtn.addActionListener(e -> dispose());
         header.add(closeBtn);
         card.add(header, "growx");
 
-        // Tabs: Favourites | Categories
-        JPanel tabs = new JPanel(new MigLayout("insets 0, gap 6", "[][]"));
+        // Tabs: Favourites | Categories (functional switching)
+        JPanel tabs = new JPanel(new MigLayout("insets 0, gap 6", "[grow, fill][grow, fill]"));
         tabs.setOpaque(false);
-        JToggleButton favBtn = tabButton("Favourites", true);
-        JToggleButton catBtn = tabButton("Categories", false);
+        favBtn = tabButton("Favourites", true);
+        catBtn = tabButton("Categories", false);
         ButtonGroup bg = new ButtonGroup();
         bg.add(favBtn); bg.add(catBtn);
-        tabs.add(favBtn, "h 28!");
-        tabs.add(catBtn, "h 28!");
+
+        favBtn.addActionListener(e -> {
+            showingFavourites = true;
+            updateTabStyles();
+            showFavourites();
+        });
+        catBtn.addActionListener(e -> {
+            showingFavourites = false;
+            updateTabStyles();
+            showCategories();
+        });
+
+        tabs.add(favBtn, "growx, h 30!");
+        tabs.add(catBtn, "growx, h 30!");
         card.add(tabs);
 
-        // Furniture grid (2 columns of thumbnail buttons)
-        JPanel grid = new JPanel(new MigLayout("wrap 2, gapy 8, gapx 8, insets 0",
-                "[grow, fill][grow, fill]"));
-        grid.setOpaque(false);
+        // Furniture grid container (content switches between fav/cat)
+        gridContainer = new JPanel(new MigLayout("wrap 1, insets 0", "[grow, fill]"));
+        gridContainer.setOpaque(false);
+        showFavourites(); // default view
 
-        ButtonGroup selGroup = new ButtonGroup();
-        for (Furniture.Type type : Furniture.Type.values()) {
-            JToggleButton btn = createThumbnailButton(type);
-            selGroup.add(btn);
-            grid.add(btn, "h 90!, grow");
-        }
-
-        JScrollPane scroll = new JScrollPane(grid);
+        JScrollPane scroll = new JScrollPane(gridContainer);
         scroll.setBorder(null);
         scroll.setOpaque(false);
         scroll.getViewport().setOpaque(false);
@@ -110,29 +157,88 @@ public class FurniturePickerDialog extends JDialog {
         return card;
     }
 
+    private void showFavourites() {
+        gridContainer.removeAll();
+        JPanel grid = new JPanel(new MigLayout("wrap 2, gapy 8, gapx 8, insets 0",
+                "[grow, fill][grow, fill]"));
+        grid.setOpaque(false);
+
+        ButtonGroup selGroup = new ButtonGroup();
+        for (Furniture.Type type : FAVOURITES) {
+            JToggleButton btn = createThumbnailButton(type);
+            selGroup.add(btn);
+            grid.add(btn, "h 90!, grow");
+        }
+        gridContainer.add(grid, "grow");
+        gridContainer.revalidate();
+        gridContainer.repaint();
+    }
+
+    private void showCategories() {
+        gridContainer.removeAll();
+        JPanel catPanel = new JPanel(new MigLayout("wrap 1, insets 0, gapy 10", "[grow, fill]"));
+        catPanel.setOpaque(false);
+
+        ButtonGroup selGroup = new ButtonGroup();
+        for (int i = 0; i < CATEGORY_NAMES.length; i++) {
+            JLabel catLabel = new JLabel(CATEGORY_NAMES[i]);
+            catLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+            catLabel.setForeground(new Color(80, 80, 80));
+            catPanel.add(catLabel);
+
+            JPanel grid = new JPanel(new MigLayout("wrap 2, gapy 8, gapx 8, insets 0",
+                    "[grow, fill][grow, fill]"));
+            grid.setOpaque(false);
+            for (Furniture.Type type : CATEGORY_ITEMS[i]) {
+                JToggleButton btn = createThumbnailButton(type);
+                selGroup.add(btn);
+                grid.add(btn, "h 90!, grow");
+            }
+            catPanel.add(grid, "grow");
+        }
+        gridContainer.add(catPanel, "grow");
+        gridContainer.revalidate();
+        gridContainer.repaint();
+    }
+
+    private void updateTabStyles() {
+        favBtn.setForeground(showingFavourites ? Color.WHITE : Color.BLACK);
+        catBtn.setForeground(!showingFavourites ? Color.WHITE : Color.BLACK);
+        favBtn.repaint();
+        catBtn.repaint();
+    }
+
     private JToggleButton tabButton(String text, boolean active) {
-        JToggleButton btn = new JToggleButton(text);
+        JToggleButton btn = new JToggleButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(isSelected() ? GREEN : Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.BLACK);
+                g2.setStroke(new BasicStroke(1f));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 10, 10);
+                g2.dispose();
+            }
+        };
         btn.setSelected(active);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setBorder(BorderFactory.createEmptyBorder(4, 14, 4, 14));
-        if (active) {
-            btn.setBackground(GREEN);
-            btn.setForeground(Color.WHITE);
-            btn.setContentAreaFilled(true);
-            btn.setOpaque(true);
-        } else {
-            btn.setBackground(new Color(230, 230, 230));
-            btn.setForeground(new Color(80, 80, 80));
-            btn.setContentAreaFilled(true);
-            btn.setOpaque(true);
-        }
-        btn.addActionListener(e -> {
-            boolean isActive = btn.isSelected();
-            btn.setBackground(isActive ? GREEN : new Color(230, 230, 230));
-            btn.setForeground(isActive ? Color.WHITE : new Color(80, 80, 80));
-        });
+        btn.setForeground(active ? Color.WHITE : Color.BLACK);
+        btn.setContentAreaFilled(false);
+        btn.setOpaque(false);
         return btn;
     }
 
