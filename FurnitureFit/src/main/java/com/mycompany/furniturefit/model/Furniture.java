@@ -17,7 +17,14 @@ public class Furniture {
         BED("Bed", 2.0, 1.5, 0.6),
         WARDROBE("Wardrobe", 1.5, 0.6, 2.0),
         DESK("Desk", 1.2, 0.6, 0.75),
-        LAMP("Floor Lamp", 0.3, 0.3, 1.5);
+        LAMP("Floor Lamp", 0.3, 0.3, 1.5),
+        // Light fixture types — can be placed in the room as 3D objects
+        PENDANT_LIGHT("Pendant Light", 0.4, 0.4, 0.5),
+        FLOOR_LAMP_LIGHT("Floor Lamp", 0.35, 0.35, 1.6),
+        CEILING_LIGHT("Ceiling Light", 0.6, 0.6, 0.15),
+        WALL_LIGHT("Wall Light", 0.25, 0.15, 0.3),
+        SPOTLIGHT("Spotlight", 0.15, 0.15, 0.2),
+        TABLE_LAMP_LIGHT("Table Lamp", 0.25, 0.25, 0.45);
 
         private final String displayName;
         private final double defaultWidth;
@@ -47,6 +54,13 @@ public class Furniture {
             return defaultHeight;
         }
 
+        /** Returns true if this type is a light fixture that emits light. */
+        public boolean isLightFixture() {
+            return this == PENDANT_LIGHT || this == FLOOR_LAMP_LIGHT ||
+                   this == CEILING_LIGHT || this == WALL_LIGHT ||
+                   this == SPOTLIGHT || this == TABLE_LAMP_LIGHT || this == LAMP;
+        }
+
         @Override
         public String toString() {
             return displayName;
@@ -64,6 +78,9 @@ public class Furniture {
     private Color color;
     private double rotation; // degrees 0-360
     private double shadeIntensity; // 0.0 to 1.0
+    private double brightness; // -1.0 (dark) to +1.0 (light), 0 = original
+    private boolean lightOn;   // true when lamp emits light (only meaningful for light types)
+    private Color lightColor;  // color of emitted light (warm yellow default)
 
     public Furniture() {
     }
@@ -80,6 +97,9 @@ public class Furniture {
         this.color = getDefaultColor(type);
         this.rotation = 0;
         this.shadeIntensity = 0;
+        this.brightness = 0;
+        this.lightOn = type.isLightFixture(); // lights default to ON
+        this.lightColor = new Color(255, 240, 200); // warm white default
     }
 
     private Color getDefaultColor(Type type) {
@@ -94,6 +114,12 @@ public class Furniture {
             case WARDROBE -> new Color(140, 95, 50);      // medium wood
             case DESK -> new Color(170, 120, 70);         // birch
             case LAMP -> new Color(220, 200, 160);        // cream
+            case PENDANT_LIGHT -> new Color(180, 170, 150);   // brushed metal
+            case FLOOR_LAMP_LIGHT -> new Color(60, 60, 60);   // dark metal
+            case CEILING_LIGHT -> new Color(240, 240, 245);   // white housing
+            case WALL_LIGHT -> new Color(200, 190, 170);      // brass
+            case SPOTLIGHT -> new Color(50, 50, 55);           // black metal
+            case TABLE_LAMP_LIGHT -> new Color(220, 200, 160);// cream ceramic
         };
     }
 
@@ -184,6 +210,30 @@ public class Furniture {
 
     public void setShadeIntensity(double shadeIntensity) {
         this.shadeIntensity = Math.max(0, Math.min(1, shadeIntensity));
+    }
+
+    public double getBrightness() {
+        return brightness;
+    }
+
+    public void setBrightness(double brightness) {
+        this.brightness = Math.max(-1.0, Math.min(1.0, brightness));
+    }
+
+    public boolean isLightOn() {
+        return lightOn;
+    }
+
+    public void setLightOn(boolean lightOn) {
+        this.lightOn = lightOn;
+    }
+
+    public Color getLightColor() {
+        return lightColor;
+    }
+
+    public void setLightColor(Color lightColor) {
+        this.lightColor = lightColor;
     }
 
     /**
