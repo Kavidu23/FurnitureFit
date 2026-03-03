@@ -5,6 +5,8 @@ import com.mycompany.furnituredesignapp.model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Main application frame managing all panels via CardLayout.
@@ -31,8 +33,8 @@ public class MainFrame extends JFrame {
     private User currentUser;
 
     public MainFrame() {
-        setTitle("FurnitureFit — Design Studio");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("FurnitureFit - Design Studio");
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setMinimumSize(new Dimension(1024, 700));
         setPreferredSize(new Dimension(1280, 800));
 
@@ -63,13 +65,26 @@ public class MainFrame extends JFrame {
 
         // Start at login
         cardLayout.show(contentPanel, LOGIN_VIEW);
+        installCloseGuard();
 
         pack();
         setLocationRelativeTo(null);
     }
 
+    private void installCloseGuard() {
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (editorPanel.isShowing() && !editorPanel.confirmExitEditorWithUnsavedChanges()) {
+                    return;
+                }
+                dispose();
+            }
+        });
+    }
+
     private void setupNavigation() {
-        // Login → Dashboard
+        // Login â†’ Dashboard
         loginPanel.setOnLoginSuccess(() -> {
             currentUser = loginPanel.getLoggedInUser();
             dashboardPanel.setCurrentUser(currentUser);
@@ -77,7 +92,7 @@ public class MainFrame extends JFrame {
             cardLayout.show(contentPanel, DASHBOARD_VIEW);
         });
 
-        // Login ↔ Register
+        // Login â†” Register
         loginPanel.setOnSwitchToRegister(() -> {
             registerPanel.reset();
             cardLayout.show(contentPanel, REGISTER_VIEW);
@@ -97,7 +112,7 @@ public class MainFrame extends JFrame {
         dashboardPanel.setOnNewDesign(() -> {
             Design newDesign = new Design(currentUser.getId(), "Untitled Design");
             editorPanel.setCurrentUser(currentUser);
-            editorPanel.loadDesign(newDesign);
+            editorPanel.loadDesign(newDesign, false);
             cardLayout.show(contentPanel, EDITOR_VIEW);
         });
 
@@ -127,21 +142,28 @@ public class MainFrame extends JFrame {
             }
         });
 
-        // Editor → Dashboard
+        // Editor â†’ Dashboard
         editorPanel.setOnBackToDashboard(() -> {
             dashboardPanel.refreshDesigns();
             cardLayout.show(contentPanel, DASHBOARD_VIEW);
         });
 
-        // Account → Dashboard
+        // Editor popup logout
+        editorPanel.setOnLogoutRequested(() -> {
+            currentUser = null;
+            loginPanel.reset();
+            cardLayout.show(contentPanel, LOGIN_VIEW);
+        });
+        // Account â†’ Dashboard
         accountPanel.setOnBack(() -> {
             dashboardPanel.setCurrentUser(currentUser); // Refresh in case name changed
             cardLayout.show(contentPanel, DASHBOARD_VIEW);
         });
 
-        // Help → Dashboard
+        // Help â†’ Dashboard
         helpPanel.setOnBack(() -> {
             cardLayout.show(contentPanel, DASHBOARD_VIEW);
         });
     }
 }
+
