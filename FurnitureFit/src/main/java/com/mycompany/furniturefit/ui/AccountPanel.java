@@ -4,142 +4,147 @@ import com.mycompany.furnituredesignapp.db.UserDAO;
 import com.mycompany.furnituredesignapp.model.User;
 import net.miginfocom.swing.MigLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import java.awt.*;
+import java.awt.font.TextAttribute;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Account panel for viewing and editing user profile.
  */
 public class AccountPanel extends JPanel {
 
+    private static final Color GREEN = new Color(45, 136, 45);
+    private static final Color PANEL_BG = new Color(240, 242, 245);
+    private static final Color CARD_BG = new Color(255, 255, 255);
+    private static final Color MUTED_TEXT = new Color(95, 95, 95);
+
+    private final Font titleFont = new Font("Segoe UI", Font.BOLD, 24);
+    private final Font nameFont = new Font("Segoe UI", Font.BOLD, 18);
+    private final Font bodyFont = new Font("Segoe UI", Font.PLAIN, 15);
+    private final Font buttonFont = createMediumWeightFont(15f);
+
     private User currentUser;
     private final UserDAO userDAO;
+
     private final JLabel nameDisplay;
     private final JLabel usernameDisplay;
     private final JLabel joinedDisplay;
+    private final AvatarPanel avatarPanel;
+
+    private final BufferedImage defaultAvatarImage;
+
     private Runnable onBack;
 
     public AccountPanel() {
         userDAO = new UserDAO();
+        defaultAvatarImage = loadDefaultAvatarImage();
+
         setLayout(new MigLayout("fill, insets 0", "[center]", "[center]"));
-        setBackground(new Color(245, 245, 245));
+        setBackground(PANEL_BG);
 
-        JPanel card = new JPanel(new MigLayout("wrap 1, insets 30 40 30 40, gapy 8", "[350!, center]"));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createLineBorder(new Color(210, 210, 210), 1));
+        JPanel card = new JPanel(new MigLayout("fillx, wrap 1, insets 16, gapy 8", "[grow, fill]"));
+        card.setBackground(CARD_BG);
+        card.setBorder(new RoundedBorder(new Color(215, 215, 215), 1, 16));
+        card.setPreferredSize(new Dimension(469, 490));
 
-        // Title
-        JLabel title = new JLabel("My Account");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        title.setForeground(new Color(56, 124, 43));
-        card.add(title, "center, gapbottom 15");
+        JLabel title = new JLabel("My Account", SwingConstants.CENTER);
+        title.setFont(titleFont);
+        title.setForeground(new Color(30, 30, 30));
+        card.add(title, "center, gapbottom 8");
 
-        // Avatar placeholder
-        JPanel avatar = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setColor(new Color(56, 124, 43));
-                g2d.fillOval(10, 5, 60, 60);
-                g2d.setColor(Color.WHITE);
-                g2d.setFont(new Font("Segoe UI", Font.BOLD, 24));
-                String initial = currentUser != null ? currentUser.getFullName().substring(0, 1).toUpperCase() : "?";
-                FontMetrics fm = g2d.getFontMetrics();
-                g2d.drawString(initial, 40 - fm.stringWidth(initial) / 2, 42);
-            }
-        };
-        avatar.setPreferredSize(new Dimension(80, 70));
-        avatar.setOpaque(false);
-        card.add(avatar, "center, gapbottom 10");
+        avatarPanel = new AvatarPanel();
+        avatarPanel.setPreferredSize(new Dimension(122, 122));
+        card.add(avatarPanel, "center");
 
-        // Info
-        JPanel infoPanel = new JPanel(new MigLayout("wrap 2, insets 0, gapy 8", "[right, 100!][grow, fill]"));
-        infoPanel.setOpaque(false);
+        nameDisplay = new JLabel("-", SwingConstants.CENTER);
+        nameDisplay.setFont(nameFont);
+        nameDisplay.setForeground(new Color(25, 25, 25));
+        card.add(nameDisplay, "center, gaptop 2");
 
-        infoPanel.add(createLabel("Full Name:"));
-        nameDisplay = new JLabel("-");
-        nameDisplay.setForeground(new Color(40, 40, 40));
-        nameDisplay.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        infoPanel.add(nameDisplay);
+        usernameDisplay = new JLabel("-", SwingConstants.CENTER);
+        usernameDisplay.setFont(bodyFont);
+        usernameDisplay.setForeground(MUTED_TEXT);
+        card.add(usernameDisplay, "center");
 
-        infoPanel.add(createLabel("Username:"));
-        usernameDisplay = new JLabel("-");
-        usernameDisplay.setForeground(new Color(80, 80, 80));
-        usernameDisplay.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        infoPanel.add(usernameDisplay);
+        joinedDisplay = new JLabel("-", SwingConstants.CENTER);
+        joinedDisplay.setFont(bodyFont);
+        joinedDisplay.setForeground(new Color(120, 120, 120));
+        card.add(joinedDisplay, "center, gapbottom 2");
 
-        infoPanel.add(createLabel("Joined:"));
-        joinedDisplay = new JLabel("-");
-        joinedDisplay.setForeground(new Color(100, 100, 100));
-        joinedDisplay.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        infoPanel.add(joinedDisplay);
+        JPanel actions = new JPanel(new MigLayout("fillx, insets 0, wrap 1, gapy 6", "[grow, fill]"));
+        actions.setOpaque(false);
 
-        card.add(infoPanel);
-
-        // Separator
-        JSeparator sep = new JSeparator();
-        sep.setForeground(new Color(210, 210, 210));
-        card.add(sep, "growx, gaptop 10, gapbottom 10");
-
-        // Change name
-        JButton changeNameBtn = new JButton("Change Display Name");
-        changeNameBtn.setFocusPainted(false);
-        changeNameBtn.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        JButton changeNameBtn = createSecondaryButton("Change Display Name");
         changeNameBtn.addActionListener(e -> changeName());
-        card.add(changeNameBtn, "growx, h 32!");
+        actions.add(changeNameBtn, "h 34!");
 
-        // Change password
-        JButton changePassBtn = new JButton("Change Password");
-        changePassBtn.setFocusPainted(false);
-        changePassBtn.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        JButton changePassBtn = createSecondaryButton("Change Password");
         changePassBtn.addActionListener(e -> changePassword());
-        card.add(changePassBtn, "growx, h 32!");
+        actions.add(changePassBtn, "h 34!");
 
-        // Back button
-        JButton backBtn = new JButton("← Back to Dashboard");
-        backBtn.setBackground(new Color(56, 124, 43));
-        backBtn.setForeground(Color.WHITE);
-        backBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        backBtn.setFocusPainted(false);
-        backBtn.setBorderPainted(false);
-        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        backBtn.addActionListener(e -> { if (onBack != null) onBack.run(); });
-        card.add(backBtn, "growx, h 36!, gaptop 15");
+        JButton backBtn = createPrimaryButton("Back to Dashboard");
+        backBtn.addActionListener(e -> {
+            if (onBack != null) {
+                onBack.run();
+            }
+        });
+        actions.add(backBtn, "h 38!, gaptop 24");
+
+        card.add(actions, "growx, pushy");
 
         add(card, "center");
     }
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
+
         if (user != null) {
-            nameDisplay.setText(user.getFullName());
-            usernameDisplay.setText(user.getUsername());
-            joinedDisplay.setText(user.getCreatedAt() != null ? user.getCreatedAt().substring(0, 10) : "N/A");
+            nameDisplay.setText(user.getFullName() != null ? user.getFullName() : "-");
+            usernameDisplay.setText(user.getUsername() != null ? user.getUsername() : "-");
+            joinedDisplay.setText("Joined: " + (user.getCreatedAt() != null ? safeDate(user.getCreatedAt()) : "N/A"));
+        } else {
+            nameDisplay.setText("-");
+            usernameDisplay.setText("-");
+            joinedDisplay.setText("Joined: N/A");
         }
+
+        avatarPanel.repaint();
         repaint();
     }
 
     private void changeName() {
-        if (currentUser == null) return;
-        String newName = JOptionPane.showInputDialog(this, "Enter new display name:",
-                currentUser.getFullName());
+        if (currentUser == null) {
+            return;
+        }
+
+        String newName = JOptionPane.showInputDialog(this, "Enter new display name:", currentUser.getFullName());
         if (newName != null && !newName.trim().isEmpty()) {
             if (userDAO.updateFullName(currentUser.getId(), newName.trim())) {
                 currentUser.setFullName(newName.trim());
                 nameDisplay.setText(newName.trim());
+                avatarPanel.repaint();
                 JOptionPane.showMessageDialog(this, "Name updated successfully!");
             }
         }
     }
 
     private void changePassword() {
-        if (currentUser == null) return;
+        if (currentUser == null) {
+            return;
+        }
+
         JPanel panel = new JPanel(new MigLayout("wrap 2", "[right][grow, fill]"));
         JPasswordField oldPass = new JPasswordField(15);
         JPasswordField newPass = new JPasswordField(15);
         JPasswordField confirmPass = new JPasswordField(15);
+
         panel.add(new JLabel("Current Password:"));
         panel.add(oldPass);
         panel.add(new JLabel("New Password:"));
@@ -147,8 +152,7 @@ public class AccountPanel extends JPanel {
         panel.add(new JLabel("Confirm:"));
         panel.add(confirmPass);
 
-        int result = JOptionPane.showConfirmDialog(this, panel, "Change Password",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(this, panel, "Change Password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             String oldP = new String(oldPass.getPassword());
             String newP = new String(newPass.getPassword());
@@ -170,12 +174,129 @@ public class AccountPanel extends JPanel {
         }
     }
 
-    private JLabel createLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setForeground(new Color(140, 145, 155));
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        return label;
+    private JButton createPrimaryButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(buttonFont);
+        button.setForeground(Color.WHITE);
+        button.setBackground(GREEN);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setOpaque(true);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return button;
     }
 
-    public void setOnBack(Runnable callback) { this.onBack = callback; }
+    private JButton createSecondaryButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        button.setForeground(new Color(45, 45, 45));
+        button.setBackground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(new RoundedBorder(new Color(215, 215, 215), 1, 10));
+        button.setOpaque(true);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
+      private Font createMediumWeightFont(float size) {
+        Map<TextAttribute, Object> attrs = new HashMap<>();
+        attrs.put(TextAttribute.FAMILY, "Segoe UI");
+        attrs.put(TextAttribute.SIZE, size);
+        attrs.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+        return new Font(attrs);
+    }
+
+    private BufferedImage loadDefaultAvatarImage() {
+        try {
+            return ImageIO.read(getClass().getResource("/images/avatar.png"));
+        } catch (IOException | IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    private String safeDate(String timestamp) {
+        if (timestamp == null || timestamp.isBlank()) {
+            return "N/A";
+        }
+        return timestamp.length() >= 10 ? timestamp.substring(0, 10) : timestamp;
+    }
+
+    public void setOnBack(Runnable callback) {
+        this.onBack = callback;
+    }
+
+    private class AvatarPanel extends JPanel {
+        AvatarPanel() {
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int size = Math.min(getWidth(), getHeight()) - 2;
+            int x = (getWidth() - size) / 2;
+            int y = (getHeight() - size) / 2;
+
+            Ellipse2D circle = new Ellipse2D.Double(x, y, size, size);
+
+            g2.setColor(new Color(215, 230, 215));
+            g2.fill(circle);
+            g2.setColor(new Color(170, 200, 170));
+            g2.setStroke(new BasicStroke(2f));
+            g2.draw(circle);
+
+            Shape oldClip = g2.getClip();
+            g2.setClip(circle);
+
+            if (defaultAvatarImage != null) {
+                g2.drawImage(defaultAvatarImage, x, y, size, size, null);
+            } else {
+                g2.setColor(new Color(180, 195, 215));
+                g2.fillOval(x + size / 3, y + size / 5, size / 3, size / 3);
+                g2.fillRoundRect(x + size / 4, y + size / 2, size / 2, size / 3, size / 3, size / 3);
+            }
+
+            g2.setClip(oldClip);
+            g2.dispose();
+        }
+    }
+
+    private static class RoundedBorder extends AbstractBorder {
+        private final Color color;
+        private final int thickness;
+        private final int radius;
+
+        RoundedBorder(Color color, int thickness, int radius) {
+            this.color = color;
+            this.thickness = thickness;
+            this.radius = radius;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(color);
+            g2.setStroke(new BasicStroke(thickness));
+            g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+            g2.dispose();
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(thickness, thickness, thickness, thickness);
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c, Insets insets) {
+            insets.left = thickness;
+            insets.right = thickness;
+            insets.top = thickness;
+            insets.bottom = thickness;
+            return insets;
+        }
+    }
 }
