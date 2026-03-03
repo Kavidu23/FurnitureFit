@@ -22,6 +22,8 @@ public class PropertiesPanel extends JPanel {
     private final JLabel rotationLabel;
     private final JSlider shadeSlider;
     private final JLabel shadeLabel;
+    private final JSlider brightnessSlider;
+    private final JLabel brightnessLabel;
     private final JButton colorButton;
     private final JPanel colorPreview;
     private final JButton deleteButton;
@@ -107,6 +109,19 @@ public class PropertiesPanel extends JPanel {
         detailsPanel.add(shadeLabel, "right");
         detailsPanel.add(shadeSlider);
 
+        // Brightness
+        detailsPanel.add(createSectionLabel("Brightness"), "span 2, left, gaptop 4, gapbottom 2");
+        brightnessSlider = new JSlider(-100, 100, 0);
+        brightnessSlider.setOpaque(false);
+        brightnessSlider.setForeground(new Color(65, 160, 230));
+        brightnessSlider.setMajorTickSpacing(50);
+        brightnessSlider.setPaintTicks(true);
+        brightnessLabel = new JLabel("0");
+        brightnessLabel.setForeground(new Color(170, 175, 185));
+        brightnessLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        detailsPanel.add(brightnessLabel, "right");
+        detailsPanel.add(brightnessSlider);
+
         // Color
         detailsPanel.add(createSeparator(), "span 2, growx, gaptop 6, gapbottom 6");
         detailsPanel.add(createFieldLabel("Color:"));
@@ -173,6 +188,16 @@ public class PropertiesPanel extends JPanel {
             }
         });
 
+        brightnessSlider.addChangeListener(e -> {
+            if (!updating && selectedFurniture != null) {
+                selectedFurniture.setBrightness(brightnessSlider.getValue() / 100.0);
+                String label = brightnessSlider.getValue() > 0 ? "+" + brightnessSlider.getValue()
+                        : String.valueOf(brightnessSlider.getValue());
+                brightnessLabel.setText(label);
+                notifyChanged();
+            }
+        });
+
         colorButton.addActionListener(e -> {
             if (selectedFurniture != null) {
                 Color newColor = JColorChooser.showDialog(this, "Choose Furniture Color", selectedFurniture.getColor());
@@ -215,6 +240,9 @@ public class PropertiesPanel extends JPanel {
             rotationLabel.setText((int) furniture.getRotation() + "°");
             shadeSlider.setValue((int) (furniture.getShadeIntensity() * 100));
             shadeLabel.setText((int) (furniture.getShadeIntensity() * 100) + "%");
+            brightnessSlider.setValue((int) (furniture.getBrightness() * 100));
+            int bVal = (int) (furniture.getBrightness() * 100);
+            brightnessLabel.setText(bVal > 0 ? "+" + bVal : String.valueOf(bVal));
             colorPreview.setBackground(furniture.getColor());
         }
 
