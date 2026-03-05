@@ -1,4 +1,4 @@
-package com.mycompany.furnituredesignapp;
+package com.mycompany.furniturefit;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mycompany.furnituredesignapp.db.DatabaseManager;
@@ -14,7 +14,7 @@ import javax.swing.*;
  *
  * Technologies: Java Swing, FlatLaf, MigLayout, SQLite, Java2D Graphics
  */
-public class FurnitureFit  {
+public class FurnitureFit {
 
     public static void main(String[] args) {
         // Set FlatLaf Light theme (matches screenshot template)
