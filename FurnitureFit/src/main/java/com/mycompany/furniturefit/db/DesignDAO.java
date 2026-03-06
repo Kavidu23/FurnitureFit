@@ -65,9 +65,17 @@ public class DesignDAO {
         """;
 
         try (PreparedStatement pstmt = dbManager.getConnection().prepareStatement(sql)) {
-            setDesignParams(pstmt, design);
-            pstmt.setInt(10, design.getId());
-            pstmt.setInt(11, design.getUserId());
+            Room room = design.getRoom();
+            pstmt.setString(1, design.getName());
+            pstmt.setDouble(2, room.getWidth());
+            pstmt.setDouble(3, room.getHeight());
+            pstmt.setDouble(4, room.getDepth());
+            pstmt.setString(5, room.getShape().name());
+            pstmt.setString(6, colorToHex(room.getWallColor()));
+            pstmt.setString(7, colorToHex(room.getFloorColor()));
+            pstmt.setString(8, serializeFurniture(design.getFurnitureList()));
+            pstmt.setInt(9, design.getId());
+            pstmt.setInt(10, design.getUserId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Update design error: " + e.getMessage());
