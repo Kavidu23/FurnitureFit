@@ -30,16 +30,18 @@ public class RoomPickerDialog extends JDialog {
         }
     }
 
-    // Single room preset
+    // Room presets
     private static final RoomPreset[] FAVOURITES = {
-        new RoomPreset("Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+        new RoomPreset("Rectangular Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+        new RoomPreset("Square Room", 4.0, 4.0, 2.8, Room.Shape.SQUARE),
     };
 
     // Categories
     private static final String[] CAT_NAMES = { "Standard" };
     private static final RoomPreset[][] CAT_ITEMS = {
         {
-            new RoomPreset("Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+            new RoomPreset("Rectangular Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+            new RoomPreset("Square Room", 4.0, 4.0, 2.8, Room.Shape.SQUARE),
         }
     };
 
@@ -260,8 +262,15 @@ public class RoomPickerDialog extends JDialog {
      * Draws a simple isometric 3D room preview inside the thumbnail.
      */
     private void drawRoomPreview(Graphics2D g2, RoomPreset preset, int pw, int ph) {
-        int rw = (int) (pw * 0.58);
-        int rh = (int) (ph * 0.42);
+        // Scale thumbnail footprint by room width/depth ratio so square presets look square.
+        double maxW = pw * 0.58;
+        double maxH = ph * 0.42;
+        double w = Math.max(0.1, preset.width);
+        double d = Math.max(0.1, preset.depth);
+        double scale = Math.min(maxW / w, maxH / d);
+
+        int rw = (int) Math.max(40, Math.round(w * scale));
+        int rh = (int) Math.max(28, Math.round(d * scale));
         int rx = (pw - rw) / 2;
         int ry = (ph - rh) / 2 + 4;
 
