@@ -39,7 +39,7 @@ public class DesignDAO {
 
         try (PreparedStatement pstmt = dbManager.getConnection().prepareStatement(sql,
                 Statement.RETURN_GENERATED_KEYS)) {
-            setDesignParams(pstmt, design);
+            setInsertParams(pstmt, design);
             pstmt.executeUpdate();
 
             ResultSet keys = pstmt.getGeneratedKeys();
@@ -65,9 +65,7 @@ public class DesignDAO {
         """;
 
         try (PreparedStatement pstmt = dbManager.getConnection().prepareStatement(sql)) {
-            setDesignParams(pstmt, design);
-            pstmt.setInt(10, design.getId());
-            pstmt.setInt(11, design.getUserId());
+            setUpdateParams(pstmt, design);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Update design error: " + e.getMessage());
@@ -133,7 +131,7 @@ public class DesignDAO {
     /**
      * Set PreparedStatement parameters from a Design object.
      */
-    private void setDesignParams(PreparedStatement pstmt, Design design) throws SQLException {
+    private void setInsertParams(PreparedStatement pstmt, Design design) throws SQLException {
         Room room = design.getRoom();
         pstmt.setInt(1, design.getUserId());
         pstmt.setString(2, design.getName());
@@ -144,6 +142,23 @@ public class DesignDAO {
         pstmt.setString(7, colorToHex(room.getWallColor()));
         pstmt.setString(8, colorToHex(room.getFloorColor()));
         pstmt.setString(9, serializeFurniture(design.getFurnitureList()));
+    }
+
+    /**
+     * Set PreparedStatement parameters for update SQL.
+     */
+    private void setUpdateParams(PreparedStatement pstmt, Design design) throws SQLException {
+        Room room = design.getRoom();
+        pstmt.setString(1, design.getName());
+        pstmt.setDouble(2, room.getWidth());
+        pstmt.setDouble(3, room.getHeight());
+        pstmt.setDouble(4, room.getDepth());
+        pstmt.setString(5, room.getShape().name());
+        pstmt.setString(6, colorToHex(room.getWallColor()));
+        pstmt.setString(7, colorToHex(room.getFloorColor()));
+        pstmt.setString(8, serializeFurniture(design.getFurnitureList()));
+        pstmt.setInt(9, design.getId());
+        pstmt.setInt(10, design.getUserId());
     }
 
     /**
@@ -251,3 +266,4 @@ public class DesignDAO {
         double shadeIntensity;
     }
 }
+fix
