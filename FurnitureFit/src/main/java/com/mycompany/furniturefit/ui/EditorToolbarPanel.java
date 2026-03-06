@@ -1,6 +1,6 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
-import com.mycompany.furnituredesignapp.model.User;
+import com.mycompany.furniturefit.model.User;
 import net.miginfocom.swing.MigLayout;
 
 import javax.imageio.ImageIO;
@@ -299,7 +299,10 @@ public class EditorToolbarPanel extends JPanel {
     public Dimension getProfileAnchorSize() { return avatarPanel.getSize(); }
     public void setUser(User user) {
         this.currentUser = user;
-        if (user != null && user.getFullName() != null) userNameLabel.setText(user.getFullName());
+        if (user != null && user.getFullName() != null) {
+            String firstName = user.getFullName().split(" ")[0];
+            userNameLabel.setText(firstName);
+        }
         avatarPanel.repaint();
     }
     public void setHelpActive(boolean active) { helpButton.setForeground(active ? GREEN : TOOLBAR_FG); }

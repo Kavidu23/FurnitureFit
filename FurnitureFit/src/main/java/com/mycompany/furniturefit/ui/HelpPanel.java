@@ -1,4 +1,4 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
 import net.miginfocom.swing.MigLayout;
 

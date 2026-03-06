@@ -1,11 +1,11 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
-import com.mycompany.furnituredesignapp.graphics.Canvas2DPanel;
-import com.mycompany.furnituredesignapp.graphics.Canvas3DPanel;
-import com.mycompany.furnituredesignapp.graphics.OpenGLCanvas3D;
-import com.mycompany.furnituredesignapp.model.Design;
-import com.mycompany.furnituredesignapp.model.Furniture;
-import com.mycompany.furnituredesignapp.model.Room;
+import com.mycompany.furniturefit.graphics.Canvas2DPanel;
+import com.mycompany.furniturefit.graphics.Canvas3DPanel;
+import com.mycompany.furniturefit.graphics.OpenGLCanvas3D;
+import com.mycompany.furniturefit.model.Design;
+import com.mycompany.furniturefit.model.Furniture;
+import com.mycompany.furniturefit.model.Room;
 
 import java.awt.Color;
 import java.util.ArrayDeque;

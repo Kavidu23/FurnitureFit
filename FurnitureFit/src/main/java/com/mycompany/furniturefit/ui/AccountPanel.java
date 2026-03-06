@@ -1,7 +1,7 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
-import com.mycompany.furnituredesignapp.db.UserDAO;
-import com.mycompany.furnituredesignapp.model.User;
+import com.mycompany.furniturefit.db.UserDAO;
+import com.mycompany.furniturefit.model.User;
 import net.miginfocom.swing.MigLayout;
 
 import javax.imageio.ImageIO;

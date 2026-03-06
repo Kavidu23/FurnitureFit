@@ -1,6 +1,6 @@
-package com.mycompany.furnituredesignapp.db;
+package com.mycompany.furniturefit.db;
 
-import com.mycompany.furnituredesignapp.model.User;
+import com.mycompany.furniturefit.model.User;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

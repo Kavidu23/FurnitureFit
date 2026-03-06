@@ -1,4 +1,4 @@
-package com.mycompany.furnituredesignapp.db;
+package com.mycompany.furniturefit.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

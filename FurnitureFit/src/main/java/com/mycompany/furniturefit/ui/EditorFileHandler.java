@@ -1,4 +1,4 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,13 +6,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mycompany.furnituredesignapp.db.DesignDAO;
-import com.mycompany.furnituredesignapp.graphics.Canvas2DPanel;
-import com.mycompany.furnituredesignapp.graphics.Canvas3DPanel;
-import com.mycompany.furnituredesignapp.graphics.OpenGLCanvas3D;
-import com.mycompany.furnituredesignapp.model.Design;
-import com.mycompany.furnituredesignapp.model.Furniture;
-import com.mycompany.furnituredesignapp.model.Room;
+import com.mycompany.furniturefit.db.DesignDAO;
+import com.mycompany.furniturefit.graphics.Canvas2DPanel;
+import com.mycompany.furniturefit.graphics.Canvas3DPanel;
+import com.mycompany.furniturefit.graphics.OpenGLCanvas3D;
+import com.mycompany.furniturefit.model.Design;
+import com.mycompany.furniturefit.model.Furniture;
+import com.mycompany.furniturefit.model.Room;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;

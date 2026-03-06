@@ -1,6 +1,6 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
-import com.mycompany.furnituredesignapp.model.Room;
+import com.mycompany.furniturefit.model.Room;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

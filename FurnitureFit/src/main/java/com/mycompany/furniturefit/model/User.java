@@ -1,4 +1,4 @@
-package com.mycompany.furnituredesignapp.model;
+package com.mycompany.furniturefit.model;
 
 /**
  * Represents a designer user in the system.

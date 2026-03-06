@@ -1,11 +1,11 @@
-package com.mycompany.furnituredesignapp.db;
+package com.mycompany.furniturefit.db;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.mycompany.furnituredesignapp.model.Design;
-import com.mycompany.furnituredesignapp.model.Furniture;
-import com.mycompany.furnituredesignapp.model.Room;
+import com.mycompany.furniturefit.model.Design;
+import com.mycompany.furniturefit.model.Furniture;
+import com.mycompany.furniturefit.model.Room;
 
 import java.awt.Color;
 import java.lang.reflect.Type;
@@ -65,9 +65,9 @@ public class DesignDAO {
         """;
 
         try (PreparedStatement pstmt = dbManager.getConnection().prepareStatement(sql)) {
-            setDesignParams(pstmt, design);
-            pstmt.setInt(10, design.getId());
-            pstmt.setInt(11, design.getUserId());
+            setUpdateParams(pstmt, design);
+            pstmt.setInt(9, design.getId());
+            pstmt.setInt(10, design.getUserId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Update design error: " + e.getMessage());

@@ -1,6 +1,6 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
-import com.mycompany.furnituredesignapp.model.Room;
+import com.mycompany.furniturefit.model.Room;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -33,6 +33,7 @@ public class RoomPickerDialog extends JDialog {
     // Room presets
     private static final RoomPreset[] FAVOURITES = {
         new RoomPreset("Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+        new RoomPreset("Square Room", 4.0, 4.0, 2.8, Room.Shape.SQUARE),
     };
 
     // Categories
@@ -40,6 +41,7 @@ public class RoomPickerDialog extends JDialog {
     private static final RoomPreset[][] CAT_ITEMS = {
         {
             new RoomPreset("Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+            new RoomPreset("Square Room", 4.0, 4.0, 2.8, Room.Shape.SQUARE),
         }
     };
 

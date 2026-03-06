@@ -1,8 +1,8 @@
 package com.mycompany.furniturefit;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.mycompany.furnituredesignapp.db.DatabaseManager;
-import com.mycompany.furnituredesignapp.ui.MainFrame;
+import com.mycompany.furniturefit.db.DatabaseManager;
+import com.mycompany.furniturefit.ui.MainFrame;
 
 import javax.swing.*;
 

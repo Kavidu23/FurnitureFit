@@ -1,4 +1,4 @@
-package com.mycompany.furnituredesignapp.graphics;
+package com.mycompany.furniturefit.graphics;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

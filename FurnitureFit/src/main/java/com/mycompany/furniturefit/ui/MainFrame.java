@@ -1,7 +1,7 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
-import com.mycompany.furnituredesignapp.model.Design;
-import com.mycompany.furnituredesignapp.model.User;
+import com.mycompany.furniturefit.model.Design;
+import com.mycompany.furniturefit.model.User;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,12 +1,12 @@
-package com.mycompany.furnituredesignapp.graphics;
+package com.mycompany.furniturefit.graphics;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.FPSAnimator;
-import com.mycompany.furnituredesignapp.model.Design;
-import com.mycompany.furnituredesignapp.model.Furniture;
-import com.mycompany.furnituredesignapp.model.Room;
+import com.mycompany.furniturefit.model.Design;
+import com.mycompany.furniturefit.model.Furniture;
+import com.mycompany.furniturefit.model.Room;
 
 import javax.swing.*;
 import java.awt.*;

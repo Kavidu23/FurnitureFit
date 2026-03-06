@@ -1,10 +1,10 @@
-package com.mycompany.furnituredesignapp.ui;
+package com.mycompany.furniturefit.ui;
 
-import com.mycompany.furnituredesignapp.db.DesignDAO;
-import com.mycompany.furnituredesignapp.model.Design;
-import com.mycompany.furnituredesignapp.model.Furniture;
-import com.mycompany.furnituredesignapp.model.Room;
-import com.mycompany.furnituredesignapp.model.User;
+import com.mycompany.furniturefit.db.DesignDAO;
+import com.mycompany.furniturefit.model.Design;
+import com.mycompany.furniturefit.model.Furniture;
+import com.mycompany.furniturefit.model.Room;
+import com.mycompany.furniturefit.model.User;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

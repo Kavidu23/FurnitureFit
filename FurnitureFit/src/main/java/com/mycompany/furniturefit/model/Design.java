@@ -1,4 +1,4 @@
-package com.mycompany.furnituredesignapp.model;
+package com.mycompany.furniturefit.model;
 
 import java.util.ArrayList;
 import java.util.List;
