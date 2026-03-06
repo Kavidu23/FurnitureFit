@@ -12,6 +12,8 @@ import com.mycompany.furnituredesignapp.model.User;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main design editor panel matching the screenshot template.
@@ -563,7 +565,26 @@ public class DesignEditorPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Add some furniture first.", "Cart", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        EditorCartDialog.show(this, currentDesign.getFurnitureList(), this::getPrice);
+
+        // Lights are design elements, but they are not billable cart items.
+        List<Furniture> billableItems = new ArrayList<>();
+        for (Furniture item : currentDesign.getFurnitureList()) {
+            if (!item.getType().isLightFixture()) {
+                billableItems.add(item);
+            }
+        }
+
+        if (billableItems.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No billable furniture in cart. Light fixtures are excluded from pricing.",
+                    "Cart",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
+        EditorCartDialog.show(this, billableItems, this::getPrice);
     }
 
     private boolean ensureRoomAddedBeforeItems() {
