@@ -618,12 +618,12 @@ public class DesignEditorPanel extends JPanel {
             case WARDROBE -> 85000;
             case DESK -> 35000;
             case LAMP -> 8000;
-            case PENDANT_LIGHT -> 12000;
-            case FLOOR_LAMP_LIGHT -> 15000;
-            case CEILING_LIGHT -> 18000;
-            case WALL_LIGHT -> 9000;
-            case SPOTLIGHT -> 7000;
-            case TABLE_LAMP_LIGHT -> 6000;
+            case PENDANT_LIGHT -> 0;
+            case FLOOR_LAMP_LIGHT -> 0;
+            case CEILING_LIGHT -> 0;
+            case WALL_LIGHT -> 0;
+            case SPOTLIGHT -> 0;
+            case TABLE_LAMP_LIGHT -> 0;
         };
     }
 }

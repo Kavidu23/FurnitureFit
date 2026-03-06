@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.function.ToLongFunction;
+import java.util.stream.Collectors;
 
 /** Improved Cart dialog */
 public final class EditorCartDialog {
@@ -20,6 +21,11 @@ public final class EditorCartDialog {
     public static void show(Component parent,
                             List<Furniture> items,
                             ToLongFunction<Furniture.Type> priceResolver) {
+
+        // Filter out light items from the cart
+        List<Furniture> filteredItems = items.stream()
+                .filter(f -> !isLightType(f.getType()))
+                .toList();
 
         Frame owner = (Frame) SwingUtilities.getWindowAncestor(parent);
         JDialog cartDlg = new JDialog(owner, true);
@@ -104,7 +110,7 @@ public final class EditorCartDialog {
         StringBuilder billText = new StringBuilder();
         billText.append("======= FURNITURE BILL =======\n\n");
 
-        for (Furniture f : items) {
+        for (Furniture f : filteredItems) {
 
             long price = priceResolver.applyAsLong(f.getType());
             total += price;
@@ -237,5 +243,12 @@ public final class EditorCartDialog {
             cartDlg.setLocationRelativeTo(parent);
         }
         cartDlg.setVisible(true);
+    }
+
+    private static boolean isLightType(Furniture.Type type) {
+        return switch (type) {
+            case PENDANT_LIGHT, FLOOR_LAMP_LIGHT, CEILING_LIGHT, WALL_LIGHT, SPOTLIGHT, TABLE_LAMP_LIGHT -> true;
+            default -> false;
+        };
     }
 }
