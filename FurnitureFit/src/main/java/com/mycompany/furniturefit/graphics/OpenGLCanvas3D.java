@@ -28,6 +28,7 @@ public class OpenGLCanvas3D extends GLJPanel implements GLEventListener {
     // ─── Design data ───
     private volatile Design design;
     private volatile Furniture selectedFurniture;
+    private volatile boolean roomVisible = true;
 
     // ─── Camera ───
     private double azimuth   = 30.0;   // degrees around Y axis
@@ -108,6 +109,7 @@ public class OpenGLCanvas3D extends GLJPanel implements GLEventListener {
     // ────────────────────────────────────────────────────────────
 
     public void setDesign(Design d)           { this.design = d;           repaint(); }
+    public void setRoomVisible(boolean roomVisible) { this.roomVisible = roomVisible; repaint(); }
     public void setSelectedFurniture(Furniture f) { this.selectedFurniture = f; repaint(); }
     public Furniture getSelectedFurniture()   { return selectedFurniture; }
     public void setOnSelectionChanged(Runnable r) { this.onSelectionChanged = r; }
@@ -230,11 +232,13 @@ public class OpenGLCanvas3D extends GLJPanel implements GLEventListener {
         }
 
         drawGrid(gl);
-        drawRoom(gl);
-        drawFurnitureItems(gl);
+        if (roomVisible) {
+            drawRoom(gl);
+            drawFurnitureItems(gl);
+        }
 
         // Draw lamp glow halos in night mode
-        if (nightMode) {
+        if (nightMode && roomVisible) {
             drawLampGlowEffects(gl);
         }
     }

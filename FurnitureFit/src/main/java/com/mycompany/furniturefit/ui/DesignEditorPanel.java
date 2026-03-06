@@ -315,7 +315,9 @@ public class DesignEditorPanel extends JPanel {
         canvas2DPanel.setDesign(design);
         canvas2DPanel.setRoomVisible(showRoomInitially);
         canvas3DPanel.setDesign(design);
+        canvas3DPanel.setRoomVisible(showRoomInitially);
         openGLCanvas3D.setDesign(design);
+        openGLCanvas3D.setRoomVisible(showRoomInitially);
         
         // Update undo/redo manager with new design
         undoRedoManager = new EditorUndoRedoManager(design, canvas2DPanel, canvas3DPanel, openGLCanvas3D);
@@ -486,6 +488,8 @@ public class DesignEditorPanel extends JPanel {
             undoRedoManager.pushUndo();
             dialog.applyToRoom(currentDesign.getRoom());
             canvas2DPanel.setRoomVisible(true);
+            canvas3DPanel.setRoomVisible(true);
+            openGLCanvas3D.setRoomVisible(true);
             hasUnsavedChanges = true;
             canvas2DPanel.repaint();
             canvas3DPanel.repaint();
@@ -577,6 +581,9 @@ public class DesignEditorPanel extends JPanel {
 
     private void switchToView3D() {
         is3DView = true;
+        boolean roomVisible = canvas2DPanel.isRoomVisible();
+        openGLCanvas3D.setRoomVisible(roomVisible);
+        canvas3DPanel.setRoomVisible(roomVisible);
         openGLCanvas3D.setDesign(currentDesign);
         canvas3DPanel.setDesign(currentDesign);
         canvasCardLayout.show(canvasContainer, "3D");

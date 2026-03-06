@@ -21,6 +21,7 @@ public class Canvas3DPanel extends JPanel implements MouseListener, MouseMotionL
 
     private Design design;
     private Furniture selectedFurniture;
+    private boolean roomVisible = true;
     private double zoom = 1.0;
 
     // Camera — NO limits on angles
@@ -49,6 +50,7 @@ public class Canvas3DPanel extends JPanel implements MouseListener, MouseMotionL
 
     // ─── Public API ───
     public void setDesign(Design design) { this.design = design; this.selectedFurniture = null; repaint(); }
+    public void setRoomVisible(boolean roomVisible) { this.roomVisible = roomVisible; repaint(); }
     public void setSelectedFurniture(Furniture f) { this.selectedFurniture = f; repaint(); }
     public Furniture getSelectedFurniture() { return selectedFurniture; }
     public void setNightMode(boolean nightMode) { this.nightMode = nightMode; repaint(); }
@@ -132,11 +134,13 @@ public class Canvas3DPanel extends JPanel implements MouseListener, MouseMotionL
             return;
         }
 
-        drawRoom3D(g2);
-        drawFurniture3D(g2);
+        if (roomVisible) {
+            drawRoom3D(g2);
+            drawFurniture3D(g2);
+        }
 
         // Draw lamp glow effects in night mode
-        if (nightMode && design != null) {
+        if (nightMode && design != null && roomVisible) {
             drawLampGlows(g2);
         }
 
