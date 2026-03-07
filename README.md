@@ -124,10 +124,7 @@ Before running FurnitureFit, ensure you have the following installed:
 
 - `Ctrl+Z`: Undo
 - `Ctrl+Y`: Redo
-- `Ctrl+S`: Save design
-- `Ctrl+O`: Open design
-- `Ctrl+N`: New design
-- `F1`: Show help
+- `R`: Rotate
 
 ### Tips for Best Experience
 
