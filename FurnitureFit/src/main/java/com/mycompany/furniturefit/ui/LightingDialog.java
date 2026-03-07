@@ -120,12 +120,6 @@ public class LightingDialog extends JDialog {
         header.add(close);
         card.add(header, "growx");
 
-        // Sub-heading
-        JLabel subLabel = new JLabel("Select a light to add to your room");
-        subLabel.setFont(new Font("Segoe UI", Font.ITALIC, 11));
-        subLabel.setForeground(new Color(130, 130, 130));
-        card.add(subLabel);
-
         // ── Tabs ──
         JPanel tabs = new JPanel(new MigLayout("insets 0, gap 6", "[grow, fill][grow, fill]"));
         tabs.setOpaque(false);
