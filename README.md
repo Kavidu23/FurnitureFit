@@ -240,7 +240,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-**Project Maintainer**: Kavidu23
+**Project Maintainer**: Rateralalage Thialakarathna
 
 - **GitHub**: [https://github.com/Kavidu23/FurnitureFit](https://github.com/Kavidu23/FurnitureFit)
 - **Issues**: [https://github.com/Kavidu23/FurnitureFit/issues](https://github.com/Kavidu23/FurnitureFit/issues)
