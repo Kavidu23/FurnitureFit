@@ -22,7 +22,7 @@ Welcome to the FurnitureFit UI Screenshots gallery! This document showcases all 
 ## Authentication
 
 ### Login Screen
-![Login](FurnitureFit/src/main/resources/screenshots/create.png)
+![Login](FurnitureFit/src/main/resources/screenshots/login.png)
 
 ### Registration Screen
 ![Register](FurnitureFit/src/main/resources/screenshots/create.png)
@@ -132,13 +132,6 @@ Welcome to the FurnitureFit UI Screenshots gallery! This document showcases all 
 
 ### Printed Bill Sample
 ![Sample Printed Bill](FurnitureFit/src/main/resources/screenshots/sample%20printed%20bill.png)
-
----
-
-## Additional Screenshots
-
-### Screenshot 2026-03-06 143856
-![Screenshot](FurnitureFit/src/main/resources/screenshots/Screenshot%202026-03-06%20143856.png)
 
 ---
 
