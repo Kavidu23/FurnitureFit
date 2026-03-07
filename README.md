@@ -199,7 +199,7 @@ FurnitureFit/
 
 ## Contributing
 
-We welcome contributions to FurnitureFit! Please follow these guidelines:
+This project is restricted for public contribution
 
 ### Development Process
 
