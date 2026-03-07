@@ -22,123 +22,123 @@ Welcome to the FurnitureFit UI Screenshots gallery! This document showcases all 
 ## Authentication
 
 ### Login Screen
-![Login](login.png)
+![Login](FurnitureFit/src/main/resources/screenshots/create.png)
 
 ### Registration Screen
-![Register](create.png)
+![Register](FurnitureFit/src/main/resources/screenshots/create.png)
 
 ---
 
 ## Dashboard
 
 ### Main Dashboard
-![Dashboard](dashboard.png)
+![Dashboard](FurnitureFit/src/main/resources/screenshots/dashboard.png)
 
 ### Cart
-![Cart](cart.png)
+![Cart](FurnitureFit/src/main/resources/screenshots/cart.png)
 
 ---
 
 ## Design Editor
 
 ### Save Design
-![Save Design](save%20design.png)
+![Save Design](FurnitureFit/src/main/resources/screenshots/save%20design.png)
 
 ### Open Design
-![Open Design](open%20design.png)
+![Open Design](FurnitureFit/src/main/resources/screenshots/open%20design.png)
 
 ---
 
 ## 2D View
 
 ### Account Panel (2D)
-![Account from 2D](account%20from%202d.png)
+![Account from 2D](FurnitureFit/src/main/resources/screenshots/account%20from%202d.png)
 
 ### Help Panel (2D)
-![Help from 2D](help%20from%202d.png)
+![Help from 2D](FurnitureFit/src/main/resources/screenshots/help%20from%202d.png)
 
 ### Add Room
-![Add Room](add_room.png)
+![Add Room](FurnitureFit/src/main/resources/screenshots/add_room.png)
 
 ### Add Furniture
-![Add Furnish](add%20furnish.png)
+![Add Furnish](FurnitureFit/src/main/resources/screenshots/add%20furnish.png)
 
 ### Add Chair
-![Add Chair](add%20chair.png)
+![Add Chair](FurnitureFit/src/main/resources/screenshots/add%20chair.png)
 
 ### Add Light
-![Add Light](add%20loght.png)
+![Add Light](FurnitureFit/src/main/resources/screenshots/add%20loght.png)
 
 ---
 
 ## 3D View
 
 ### 3D View
-![3D View](3d%20view.png)
+![3D View](FurnitureFit/src/main/resources/screenshots/3d%20view.png)
 
 ### 3D Night Mode
-![3D Night Mode](3d%20night%20mode.png)
+![3D Night Mode](FurnitureFit/src/main/resources/screenshots/3d%20night%20mode.png)
 
 ---
 
 ## Furniture Management
 
 ### Furniture Picker
-![Furniture Picker](add%20furnish.png)
+![Furniture Picker](FurnitureFit/src/main/resources/screenshots/add%20furnish.png)
 
 ---
 
 ## Room Configuration
 
 ### Add Room Dialog
-![Add Room](add_room.png)
+![Add Room](FurnitureFit/src/main/resources/screenshots/add_room.png)
 
 ---
 
 ## Account & Settings
 
 ### Account Panel
-![Account](account.png)
+![Account](FurnitureFit/src/main/resources/screenshots/account.png)
 
 ### Change Display Name
-![Change Display Name](Change%20display%20name.png)
+![Change Display Name](FurnitureFit/src/main/resources/screenshots/Change%20display%20name.png)
 
 ### Change Password
-![Change Password](change%20password.png)
+![Change Password](FurnitureFit/src/main/resources/screenshots/change%20password.png)
 
 ### Logout
-![Logout](logout.png)
+![Logout](FurnitureFit/src/main/resources/screenshots/logout.png)
 
 ---
 
 ## Help System
 
 ### Help Panel
-![Help](help.png)
+![Help](FurnitureFit/src/main/resources/screenshots/help.png)
 
 ---
 
 ## Messages & Notifications
 
 ### Success Messages
-![Success Messages](sucess%20messages.png)
+![Success Messages](FurnitureFit/src/main/resources/screenshots/sucess%20messages.png)
 
 ### Warning Messages
-![Warning](warning.png)
+![Warning](FurnitureFit/src/main/resources/screenshots/warning.png)
 
 ---
 
 ## Sample Bill
 
 ### Printed Bill Sample
-![Sample Printed Bill](sample%20printed%20bill.png)
+![Sample Printed Bill](FurnitureFit/src/main/resources/screenshots/sample%20printed%20bill.png)
 
 ---
 
 ## Additional Screenshots
 
 ### Screenshot 2026-03-06 143856
-![Screenshot](Screenshot%202026-03-06%20143856.png)
+![Screenshot](FurnitureFit/src/main/resources/screenshots/Screenshot%202026-03-06%20143856.png)
 
 ---
 
