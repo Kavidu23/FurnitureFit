@@ -30,9 +30,9 @@ public class RoomPickerDialog extends JDialog {
         }
     }
 
-    // Room presets
+     // Room presets
     private static final RoomPreset[] FAVOURITES = {
-        new RoomPreset("Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+        new RoomPreset("Rectangular Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
         new RoomPreset("Square Room", 4.0, 4.0, 2.8, Room.Shape.SQUARE),
     };
 
@@ -40,7 +40,7 @@ public class RoomPickerDialog extends JDialog {
     private static final String[] CAT_NAMES = { "Standard" };
     private static final RoomPreset[][] CAT_ITEMS = {
         {
-            new RoomPreset("Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
+            new RoomPreset("Rectangular Room", 4.0, 4.5, 2.8, Room.Shape.RECTANGULAR),
             new RoomPreset("Square Room", 4.0, 4.0, 2.8, Room.Shape.SQUARE),
         }
     };
@@ -262,16 +262,26 @@ public class RoomPickerDialog extends JDialog {
      * Draws a simple isometric 3D room preview inside the thumbnail.
      */
     private void drawRoomPreview(Graphics2D g2, RoomPreset preset, int pw, int ph) {
-        int rw = (int) (pw * 0.58);
-        int rh = (int) (ph * 0.42);
-        int rx = (pw - rw) / 2;
-        int ry = (ph - rh) / 2 + 4;
 
-        g2.setColor(new Color(230, 225, 215));
-        g2.fillRoundRect(rx, ry, rw, rh, 8, 8);
-        g2.setColor(new Color(120, 120, 120));
-        g2.setStroke(new BasicStroke(1.4f));
-        g2.drawRoundRect(rx, ry, rw, rh, 8, 8);
+    int rw;
+    int rh;
+
+    if (preset.shape == Room.Shape.SQUARE) {
+        rw = rh = 70; // perfect square
+    } else { 
+        rw = 90;     // wider rectangle
+        rh = 60;
+    }
+
+    int rx = (pw - rw) / 2;
+    int ry = (ph - rh) / 2 + 4;
+
+    g2.setColor(new Color(230, 225, 215));
+    g2.fillRoundRect(rx, ry, rw, rh, 8, 8);
+
+    g2.setColor(new Color(120, 120, 120));
+    g2.setStroke(new BasicStroke(1.4f));
+    g2.drawRoundRect(rx, ry, rw, rh, 8, 8);
     }
 
     // Public API ──
