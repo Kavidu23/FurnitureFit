@@ -2,7 +2,6 @@
 
 [![Java](https://img.shields.io/badge/Java-21-orange)](https://openjdk.java.net/)
 [![Maven](https://img.shields.io/badge/Maven-3.8+-blue)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 FurnitureFit is a comprehensive desktop application designed for furniture designers and interior decorators to create, visualize, and manage room layouts. Built with modern Java technologies, it provides an intuitive interface for designing spaces in both 2D and 3D perspectives, complete with furniture placement, lighting controls, and collaborative features.
 
@@ -16,7 +15,6 @@ FurnitureFit is a comprehensive desktop application designed for furniture desig
 - [Building from Source](#building-from-source)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
-- [License](#license)
 - [Contact](#contact)
 
 ## Features
@@ -230,10 +228,6 @@ This project is restricted for public contribution
 - Provide detailed steps to reproduce bugs
 - Include system information (OS, Java version, etc.)
 - Attach screenshots for UI-related issues
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
